@@ -41,3 +41,9 @@ Only English can be supported, no other translation languages will be supported.
 ## Support & Feedback
 
 Encountered an issue? Have suggestions? Feel free to open an issue or a pull request on this GitHub repository. I'm always looking to improve Buttercup and appreciate your feedback.
+
+## Credits
+
+- [Sanchit Gandhi](https://github.com/sanchit-gandhi) for the public API for whisper-jax
+- [DualSubs](https://github.com/DualSubs) project and [Virgil Clyne](https://github.com/VirgilClyne) specifically for some help on overriding the responses for YouTube's captions API
+- [Cloudflare](https://cloudflare.com/) for providing the free and easy-to-use serverless architecture and KV database API for the cache database service
