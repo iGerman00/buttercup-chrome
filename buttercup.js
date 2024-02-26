@@ -40,6 +40,7 @@ const SVG_TRANSLATE = `<?xml version="1.0" encoding="utf-8"?><svg fill="#fff" wi
 
 let TRANSLATE = null;
 let ENABLED = null;
+let CACHE = null;
 
 // Wrap the event listener in a Promise
 const getButtercupTranslate = new Promise((resolve) => {
@@ -60,9 +61,22 @@ const getButtercupEnabled = new Promise((resolve) => {
     document.dispatchEvent(new CustomEvent('requestButtercupEnabled', {}));
 });
 
+const getButtercupCache = new Promise((resolve) => {
+    document.addEventListener('responseButtercupCache', function (e) {
+        CACHE = e.detail;
+        resolve();
+    });
+    // Request the value of buttercup_cache from the content script
+    document.dispatchEvent(new CustomEvent('requestButtercupCache', {}));
+});
+
 async function init() {
     console.log('[Buttercup] Initializing');
-    await Promise.all([getButtercupTranslate, getButtercupEnabled]);
+    await Promise.all([
+        getButtercupTranslate,
+        getButtercupEnabled,
+        getButtercupCache,
+    ]);
 }
 
 const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
@@ -74,6 +88,7 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
 
     console.log('[Buttercup] Enabled: ', ENABLED);
     console.log('[Buttercup] Translate: ', TRANSLATE);
+    console.log('[Buttercup] Cache: ', CACHE);
 
     if (!ENABLED) {
         console.info('[Buttercup] Disabled, skipping everything');
@@ -103,10 +118,6 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
     const interval = setInterval(() => {
         if (window['ytInitialPlayerResponse']) {
             if (window['ytInitialPlayerResponse'].captions) {
-                console.log(
-                    '[Buttercup]',
-                    window['ytInitialPlayerResponse'].captions
-                );
                 // go over every caption, if we have an asr caption (kind: asr), replace it with CAPTION_TRACK
                 let captionTracks =
                     window['ytInitialPlayerResponse'].captions
@@ -246,45 +257,46 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
                             );
                         }
 
+                        function handleResponse(response) {
+                            if (response.status === 200) {
+                                console.info(
+                                    '[Buttercup] Using cached subtitles'
+                                );
+                                setLoading(false);
+                                clickSubtitleButton();
+                                return response.json();
+                            } else {
+                                console.info(
+                                    '[Buttercup] Getting subtitles from HF'
+                                );
+                                getSubtitles();
+                            }
+                        }
+
+                        function handleData(data) {
+                            customSubtitle = data.c;
+                        }
+
+                        function handleError(error) {
+                            console.error(
+                                '[Buttercup] Error fetching subtitles: ',
+                                error
+                            );
+                        }
+
                         // Fetch subtitles from cache if available
-                        fetch('https://buttercup.igerman.cc/', {
-                            headers: headers,
-                        })
-                            .then((response) => {
-                                if (response.status === 200) {
-                                    console.info(
-                                        '[Buttercup] Using cached subtitles'
-                                    );
-                                    setLoading(false);
-                                    clickSubtitleButton();
-                                    return response.json();
-                                } else {
-                                    console.info(
-                                        '[Buttercup] Getting subtitles from HF'
-                                    );
-                                    getSubtitles();
-                                }
+                        if (CACHE) {
+                            fetch('https://buttercup.igerman.cc/', {
+                                headers: headers,
                             })
-                            .then((data) => {
-                                customSubtitle = data.c;
-                            })
-                            .catch((error) => {
-                                if (
-                                    error.includes(
-                                        'Cannot read properties of undefined'
-                                    )
-                                ) {
-                                    console.error(
-                                        '[Buttercup] Error fetching subtitles: ',
-                                        error
-                                    );
-                                } else {
-                                    console.error(
-                                        '[Buttercup] Error fetching subtitles: ',
-                                        error
-                                    );
-                                }
-                            });
+                                .then(handleResponse)
+                                .then(handleData)
+                                .catch(handleError);
+                        } else {
+                            // If user opted out of cache, proceed as if there is no cache
+                            console.log("[Buttercup] Opted out of cache, not fetching subtitles from cache");
+                            getSubtitles();
+                        }
                     }
                     return customSubtitle;
                 }
@@ -300,6 +312,65 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
     // override /youtubei/v1/player, the response is json, we need to inject an empty captions object into it
 
     function getSubtitles() {
+        function handleResponse(response) {
+            if (response.status === 200) {
+                console.info('[Buttercup] Subtitles cached');
+            } else {
+                console.error(
+                    '[Buttercup] Error caching subtitles: ',
+                    response.status
+                );
+            }
+        }
+
+        function handleError(error) {
+            console.error('[Buttercup] Error caching subtitles: ', error);
+        }
+
+        function handleData(data) {
+            const took = data.data[2];
+            const subtitles = data.data[1];
+            console.info('[Buttercup] Got custom subtitles in ' + took + 's');
+            customSubtitle = JSON.stringify(customFormatToJson(subtitles));
+
+            let headers = {
+                'Content-Type': 'application/json',
+                'BC-VideoID': getVideoId(),
+            };
+
+            if (TRANSLATE) {
+                headers['BC-Translate'] = 'true';
+            }
+
+            // Cache subtitles if enabled
+            if (CACHE) {
+                fetch('https://buttercup.igerman.cc/', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify({
+                        id: getVideoId(),
+                        captions: customSubtitle,
+                    }),
+                })
+                    .then(handleResponse)
+                    .catch(handleError);
+            } else {
+                console.info('[Buttercup] Opted out of cache, not caching subtitles');
+            }
+        }
+
+        // Function to handle fetch error
+        function handleFetchError(error) {
+            setLoading(false, true);
+            console.error('Error:', error);
+        }
+
+        // Function to handle finally
+        function handleFinally() {
+            setLoading(false);
+            clickSubtitleButton();
+        }
+
         // Thanks to sanchit-gandhi and their Huggingface space for the whisper-jax API!
         fetch('https://sanchit-gandhi-whisper-jax.hf.space/api/predict_2', {
             method: 'POST',
@@ -315,60 +386,9 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
             }),
         })
             .then((response) => response.json())
-            .then((data) => {
-                // data.data[0] is a youtube iframe
-                const took = data.data[2]; // returns time taken in seconds, doesn't account for initialization, only transcription
-                const subtitles = data.data[1]; // just a string
-                console.info(
-                    '[Buttercup] Got custom subtitles in ' + took + 's'
-                );
-                customSubtitle = JSON.stringify(customFormatToJson(subtitles));
-
-                let headers = {
-                    'Content-Type': 'application/json',
-                    'BC-VideoID': getVideoId(),
-                };
-
-                if (TRANSLATE) {
-                    headers['BC-Translate'] = 'true';
-                }
-
-                // Cache subtitles
-                fetch('https://buttercup.igerman.cc/', {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({
-                        id: getVideoId(),
-                        captions: customSubtitle,
-                    }),
-                })
-                    .then((response) => {
-                        if (response.status === 200) {
-                            console.info('[Buttercup] Subtitles cached');
-                        } else {
-                            console.error(
-                                '[Buttercup] Error caching subtitles: ',
-                                response.status
-                            );
-                        }
-                    })
-                    .catch((error) => {
-                        console.error(
-                            '[Buttercup] Error caching subtitles: ',
-                            error
-                        );
-                    });
-            })
-            .catch((error) => {
-                setLoading(false, true);
-                // it often errors with a 500 because yt-dlp fails on the backend, it should just retry
-                // retrying on error is a bug btw and it will hammer the api but now its a feature YAY
-                console.error('Error:', error);
-            })
-            .finally(() => {
-                setLoading(false);
-                clickSubtitleButton();
-            });
+            .then(handleData)
+            .catch(handleFetchError)
+            .finally(handleFinally);
     }
 
     function customFormatToJson(subtitleContent) {
@@ -452,63 +472,6 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
         }
         element.disabled = isLoading;
         element.innerHTML = isLoading ? SVG_LOADER : SVG_BCAPTIONS;
-    }
-
-    function injectConfig() {
-        // reminants of userscript days
-        const observer = new MutationObserver(function (
-            mutationsList,
-            observer
-        ) {
-            const menu = document.getElementsByClassName('ytp-panel-menu')[0];
-            if (menu) {
-                console.info('[Buttercup] Found menu, inserting config');
-                observer.disconnect();
-
-                const menuItem = document.createElement('div');
-                menuItem.classList.add('ytp-menuitem');
-                menuItem.setAttribute('role', 'menuitemcheckbox');
-                menuItem.setAttribute('aria-checked', TRANSLATE);
-                menuItem.setAttribute('tabindex', '0');
-
-                const menuItemIcon = document.createElement('div');
-                menuItemIcon.classList.add('ytp-menuitem-icon');
-                menuItemIcon.innerHTML =
-                    escapeHTMLPolicy.createHTML(SVG_TRANSLATE);
-
-                const menuItemLabel = document.createElement('div');
-                menuItemLabel.classList.add('ytp-menuitem-label');
-                menuItemLabel.innerHTML = escapeHTMLPolicy.createHTML(
-                    'Buttercup - Translate to English'
-                );
-
-                const menuItemContent = document.createElement('div');
-                menuItemContent.classList.add('ytp-menuitem-content');
-
-                const menuItemToggle = document.createElement('div');
-                menuItemToggle.classList.add('ytp-menuitem-toggle-checkbox');
-
-                menuItemContent.appendChild(menuItemToggle);
-                menuItem.appendChild(menuItemIcon);
-                menuItem.appendChild(menuItemLabel);
-                menuItem.appendChild(menuItemContent);
-
-                menu.appendChild(menuItem);
-
-                menuItem.addEventListener('click', function () {
-                    TRANSLATE = !TRANSLATE; // non functional
-                    chrome.storage.local.set({
-                        buttercup_translate: TRANSLATE,
-                    });
-                    menuItem.setAttribute('aria-checked', TRANSLATE);
-                });
-            }
-        });
-
-        observer.observe(document.documentElement, {
-            childList: true,
-            subtree: true,
-        });
     }
 
     function getVideoId() {

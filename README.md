@@ -11,7 +11,7 @@ Powered by [whisper-jax](https://github.com/sanchit-gandhi/whisper-jax), thanks 
 
 - **Whisper-Generated Captions:** Leverages Whisper AI tech for decent captions.
 - **Automatic Replacement:** Replaces YouTube's default auto-captions with Buttercup, not affecting videos with existing real captions. Real captions always take priority over automatically generated ones.
-- **Caching System:** Utilizes a [caching database](https://buttercup.igerman.cc) to store video IDs and generated captions for enhanced performance and to avoid hammering the Whisper API.
+- **Caching System:** Utilizes an optional [caching database](https://buttercup.igerman.cc) to store video IDs and generated captions for enhanced performance and to avoid hammering the Whisper API.
 - **Translation:** Seamlessly translate all speech to English. An option and a separated database for English-translated captions are available. 
 
 ## Installation
@@ -23,7 +23,7 @@ Powered by [whisper-jax](https://github.com/sanchit-gandhi/whisper-jax), thanks 
 ## Privacy and Data Usage
 
 Buttercup has no need to spy on you, however:
-- The caching database **does not allow opting out** currently.
+- You can opt out of using the cache database in the extension settings.
 - **IP addresses** are stored briefly for rate limiting and are **not linked** to captions or video IDs.
 - The **database source code** is not yet available.
 

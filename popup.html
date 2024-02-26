@@ -1,99 +1,81 @@
 <!DOCTYPE html>
 <html data-theme="cupcake" lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="initial-scale=1.0" />
-        <title>Buttercup</title>
-        <link
-            href="assets/css/daisyui-4.7.2.full.min.css"
-            rel="stylesheet"
-            type="text/css"
-        />
-        <script src="assets/js/tailwindcss.3.4.1.js"></script>
-        <style type="text/css">
-            /* 600x200px */
-            body {
-                width: 400px;
-                height: 400px;
-            }
 
-            .controls-container {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: min-content;
-                width: 100%;
-            }
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="initial-scale=1.0" />
+    <title>Buttercup</title>
+    <link href="assets/css/daisyui-4.7.2.full.min.css" rel="stylesheet" type="text/css" />
+    <script src="assets/js/tailwindcss.3.4.1.js"></script>
+    <style type="text/css">
+        /* 600x200px */
+        body {
+            width: 400px;
+            height: 400px;
+        }
 
-            .form-control {
-                margin: 10;
-                width: 80%;
-            }
+        .controls-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: min-content;
+            width: 100%;
+        }
 
-            #buttons {
-                grid-auto-flow: column !important;
-            }
-        </style>
-    </head>
+        .form-control {
+            margin: 10;
+            width: 80%;
+        }
 
-    <body>
-        <div class="max-w-md text-center pt-10">
-            <h1 class="text-5xl font-bold">Buttercup</h1>
-            <p class="text-sm pt-10">
-                Replace YouTube's crappy auto-generated subtitles with
-                Buttercup's awesome Whisper-generated ones
-            </p>
+        #buttons {
+            grid-auto-flow: column !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="max-w-md text-center pt-10">
+        <h1 class="text-5xl font-bold">Buttercup</h1>
+        <p class="text-sm pt-10">
+            Replace YouTube's crappy auto-generated subtitles with
+            Buttercup's awesome Whisper-generated ones
+        </p>
+    </div>
+    <div class="controls-container">
+        <div class="form-control">
+            <div class="divider"></div>
+            <label class="label cursor-pointer">
+                <span class="label-text">Enabled</span>
+                <input type="checkbox" class="toggle" id="enabled" checked />
+            </label>
+            <div class="divider"></div>
+            <label class="label cursor-pointer">
+                <span class="label-text">Translate everything to English</span>
+                <input type="checkbox" class="toggle" id="translate" />
+            </label>
+            <div class="divider"></div>
+            <label class="label cursor-pointer">
+                <span class="label-text">Use cache database</span>
+                <input type="checkbox" class="toggle" id="cache" checked />
+            </label>
+            <div class="divider"></div>
         </div>
-        <div class="controls-container">
-            <div class="form-control">
-                <div class="divider"></div>
-                <label class="label cursor-pointer">
-                    <span class="label-text">Enabled</span>
-                    <input
-                        type="checkbox"
-                        class="toggle"
-                        id="enabled"
-                        checked
-                    />
-                </label>
-                <div class="divider"></div>
-                <label class="label cursor-pointer">
-                    <span class="label-text"
-                        >Translate everything to English</span
-                    >
-                    <input type="checkbox" class="toggle" id="translate" />
-                </label>
-                <div class="divider"></div>
-            </div>
+    </div>
+    <footer class="footer p-4 bg-neutral text-neutral-content flex flex-row justify-center max-w">
+        <div class="grid grid-flow-col max-w" id="buttons">
+            <a href="https://igerman.cc/" target="_blank" class="btn btn-primary btn-wide btn-sm max-w-24">
+                Contact
+            </a>
+            <a href="https://ko-fi.com/D1D2BJ5D6" target="_blank" class="btn btn-secondary btn-wide btn-sm max-w-24">
+                Donate
+            </a>
+            <a href="https://buttercup.igerman.cc" target="_blank" class="btn btn-wide btn-sm max-w-24">
+                Cache DB
+            </a>
         </div>
-        <footer
-            class="footer p-4 bg-neutral text-neutral-content flex flex-row justify-center max-w"
-        >
-            <div class="grid grid-flow-col max-w" id="buttons">
-                <a
-                    href="https://igerman.cc/"
-                    target="_blank"
-                    class="btn btn-primary btn-wide btn-sm max-w-24"
-                >
-                    Contact
-                </a>
-                <a
-                    href="https://ko-fi.com/D1D2BJ5D6"
-                    target="_blank"
-                    class="btn btn-secondary btn-wide btn-sm max-w-24"
-                >
-                    Donate
-                </a>
-                <a
-                    href="https://buttercup.igerman.cc"
-                    target="_blank"
-                    class="btn btn-wide btn-sm max-w-24"
-                >
-                    Cache DB
-                </a>
-            </div>
-        </footer>
-    </body>
+    </footer>
+</body>
 
-    <script src="assets/js/buttons.js"></script>
+<script src="assets/js/buttons.js"></script>
+
 </html>
