@@ -40,4 +40,4 @@ Only English can be supported, no other translation languages will be supported.
 
 ## Support & Feedback
 
-Encountered an issue? Have suggestions? Feel free to open an issue on this GitHub repository. I'm always looking to improve Buttercup and appreciate your feedback.
+Encountered an issue? Have suggestions? Feel free to open an issue or a pull request on this GitHub repository. I'm always looking to improve Buttercup and appreciate your feedback.
