@@ -11,11 +11,8 @@ translate.addEventListener('change', () => {
 cache.addEventListener('change', () => {
     chrome.storage.sync.set({ buttercup_cache: cache.checked });
 });
-chrome.storage.sync.get(
-    ['buttercup_enabled', 'buttercup_translate', 'buttercup_cache'],
-    (result) => {
-        enabled.checked = result.buttercup_enabled;
-        translate.checked = result.buttercup_translate;
-        cache.checked = result.buttercup_cache;
-    }
-);
+chrome.storage.sync.get(['buttercup_enabled', 'buttercup_translate', 'buttercup_cache'], (result) => {
+    enabled.checked = result.buttercup_enabled;
+    translate.checked = result.buttercup_translate;
+    cache.checked = result.buttercup_cache;
+});

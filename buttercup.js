@@ -1,6 +1,6 @@
 // I apologize in advance to whoever is paying for the API calls. But it's public, and there's an API, so I'm using it. I hope I'm defrauding some massive corporation and not some poor soul.
 // Can you tell this used to be a userscript?
-console.log('[Buttercup] Injected');
+console.info('[Buttercup] Injected');
 
 const BUTTON_CLASSNAME = 'ytp-subtitles-button ytp-button';
 
@@ -71,12 +71,8 @@ const getButtercupCache = new Promise((resolve) => {
 });
 
 async function init() {
-    console.log('[Buttercup] Initializing');
-    await Promise.all([
-        getButtercupTranslate,
-        getButtercupEnabled,
-        getButtercupCache,
-    ]);
+    console.info('[Buttercup] Initializing');
+    await Promise.all([getButtercupTranslate, getButtercupEnabled, getButtercupCache]);
 }
 
 const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
@@ -86,19 +82,16 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
 (async function () {
     await init();
 
-    console.log('[Buttercup] Enabled: ', ENABLED);
-    console.log('[Buttercup] Translate: ', TRANSLATE);
-    console.log('[Buttercup] Cache: ', CACHE);
+    console.info('[Buttercup] Enabled: ', ENABLED);
+    console.info('[Buttercup] Translate: ', TRANSLATE);
+    console.info('[Buttercup] Cache: ', CACHE);
 
     if (!ENABLED) {
         console.info('[Buttercup] Disabled, skipping everything');
         return;
     } else {
         // update the button all the time
-        const observer = new MutationObserver(function (
-            mutationsList,
-            observer
-        ) {
+        const observer = new MutationObserver(function (mutationsList, observer) {
             const button = document.getElementsByClassName(BUTTON_CLASSNAME)[0];
             if (button) {
                 console.info('[Buttercup] Replacing icon');
@@ -119,24 +112,15 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
         if (window['ytInitialPlayerResponse']) {
             if (window['ytInitialPlayerResponse'].captions) {
                 // go over every caption, if we have an asr caption (kind: asr), replace it with CAPTION_TRACK
-                let captionTracks =
-                    window['ytInitialPlayerResponse'].captions
-                        .playerCaptionsTracklistRenderer.captionTracks;
+                let captionTracks = window['ytInitialPlayerResponse'].captions.playerCaptionsTracklistRenderer.captionTracks;
                 for (let i = 0; i < captionTracks.length; i++) {
                     if (captionTracks[i].kind === 'asr') {
-                        console.info(
-                            '[Buttercup] Found ASR caption, replacing'
-                        );
+                        console.info('[Buttercup] Found ASR caption, replacing');
                         captionTracks[i] = CAPTION_TRACK;
                     }
                 }
-                window[
-                    'ytInitialPlayerResponse'
-                ].captions.playerCaptionsTracklistRenderer.captionTracks =
-                    captionTracks;
-                console.info(
-                    '[Buttercup] Initial response has captions, skipping injection'
-                );
+                window['ytInitialPlayerResponse'].captions.playerCaptionsTracklistRenderer.captionTracks = captionTracks;
+                console.info('[Buttercup] Initial response has captions, skipping injection');
                 clearInterval(interval);
                 return;
             }
@@ -167,19 +151,15 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
                 if (json.captions === undefined) {
                     json.captions = CAPTIONS_OBJECT;
                 } else {
-                    let captionTracks =
-                        json.captions.playerCaptionsTracklistRenderer
-                            .captionTracks;
+                    let captionTracks = json.captions.playerCaptionsTracklistRenderer.captionTracks;
                     for (let i = 0; i < captionTracks.length; i++) {
                         if (captionTracks[i].kind === 'asr') {
-                            console.info(
-                                '[Buttercup] Found ASR caption, replacing'
-                            );
+                            console.info('[Buttercup] Found ASR caption, replacing');
                             captionTracks[i] = CAPTION_TRACK;
                         }
                     }
                 }
-                console.log('[Buttercup] Overriding /youtubei/v1/player fetch');
+                console.info('[Buttercup] Overriding /youtubei/v1/player fetch');
                 return new Response(JSON.stringify(json), ...arguments);
                 // return response;
             }
@@ -224,21 +204,13 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
                 if (!ENABLED) {
                     return this.response;
                 }
-                const isButtercup =
-                    new URL(this.responseURL).searchParams.get('buttercup') ===
-                    'true';
+                const isButtercup = new URL(this.responseURL).searchParams.get('buttercup') === 'true';
                 // timedtext is the endpoint for all subtitles
-                if (
-                    (this.responseURL.includes('/api/timedtext') ||
-                        isButtercup) &&
-                    isPlayer()
-                ) {
+                if ((this.responseURL.includes('/api/timedtext') || isButtercup) && isPlayer()) {
                     // therefore if url param "kind" is not equal to "asr" (automatic subtitles) return as it's probably proper subtitles
                     const urlParams = new URLSearchParams(this.responseURL);
                     if (urlParams.get('kind') !== 'asr' && !isButtercup) {
-                        console.info(
-                            '[Buttercup] Not automatic subtitles, passing through'
-                        );
+                        console.info('[Buttercup] Not automatic subtitles, passing through');
                         return this.response;
                     }
                     if (customSubtitle === null) {
@@ -252,23 +224,17 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
 
                         if (TRANSLATE) {
                             headers['BC-Translate'] = 'true';
-                            console.info(
-                                '[Buttercup] Requesting translated subtitles'
-                            );
+                            console.info('[Buttercup] Requesting translated subtitles');
                         }
 
                         function handleResponse(response) {
                             if (response.status === 200) {
-                                console.info(
-                                    '[Buttercup] Using cached subtitles'
-                                );
+                                console.info('[Buttercup] Using cached subtitles');
                                 setLoading(false);
                                 clickSubtitleButton();
                                 return response.json();
                             } else {
-                                console.info(
-                                    '[Buttercup] Getting subtitles from HF'
-                                );
+                                console.info('[Buttercup] Getting subtitles from HF');
                                 getSubtitles();
                             }
                         }
@@ -278,10 +244,7 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
                         }
 
                         function handleError(error) {
-                            console.error(
-                                '[Buttercup] Error fetching subtitles: ',
-                                error
-                            );
+                            console.error('[Buttercup] Error fetching subtitles: ', error);
                         }
 
                         // Fetch subtitles from cache if available
@@ -294,7 +257,7 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
                                 .catch(handleError);
                         } else {
                             // If user opted out of cache, proceed as if there is no cache
-                            console.log("[Buttercup] Opted out of cache, not fetching subtitles from cache");
+                            console.info('[Buttercup] Opted out of cache, not fetching subtitles from cache');
                             getSubtitles();
                         }
                     }
@@ -316,10 +279,7 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
             if (response.status === 200) {
                 console.info('[Buttercup] Subtitles cached');
             } else {
-                console.error(
-                    '[Buttercup] Error caching subtitles: ',
-                    response.status
-                );
+                console.error('[Buttercup] Error caching subtitles: ', response.status);
             }
         }
 
@@ -378,11 +338,7 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                data: [
-                    window.location.href,
-                    TRANSLATE ? 'translate' : 'transcribe',
-                    true,
-                ],
+                data: [window.location.href, TRANSLATE ? 'translate' : 'transcribe', true],
             }),
         })
             .then((response) => response.json())
@@ -392,7 +348,7 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
     }
 
     function customFormatToJson(subtitleContent) {
-        console.log('[Buttercup] Converting custom format to JSON');
+        console.info('[Buttercup] Converting custom format to JSON');
         // Whisper-JAX, or at least the huggingface space, returns subtitles in a custom format that's not even SRT, disgusting fortune, time to parse
         // YouTube expects a completely different format of its own, they call it "json3", we'll convert to that right away
 
@@ -443,21 +399,10 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
         // example: 15:22 570, if hours then 01:15:22 570
         // idk if it messes up with hours, i hope not i havent tested
         const hours = hoursMinSec.length > 5 ? hoursMinSec.split(':')[0] : 0;
-        const minutes =
-            hoursMinSec.length > 5
-                ? hoursMinSec.split(':')[1]
-                : hoursMinSec.split(':')[0];
-        const seconds =
-            hoursMinSec.length > 5
-                ? hoursMinSec.split(':')[2]
-                : hoursMinSec.split(':')[1];
+        const minutes = hoursMinSec.length > 5 ? hoursMinSec.split(':')[1] : hoursMinSec.split(':')[0];
+        const seconds = hoursMinSec.length > 5 ? hoursMinSec.split(':')[2] : hoursMinSec.split(':')[1];
         const milliseconds = milli || 0;
-        return (
-            parseInt(hours) * 3600000 +
-            parseInt(minutes) * 60000 +
-            parseInt(seconds) * 1000 +
-            parseInt(milliseconds)
-        );
+        return parseInt(hours) * 3600000 + parseInt(minutes) * 60000 + parseInt(seconds) * 1000 + parseInt(milliseconds);
     }
 
     function clickSubtitleButton() {
