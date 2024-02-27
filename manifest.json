@@ -4,11 +4,7 @@
     "version": "0.0.25",
     "description": "Replace YouTube auto captions with OpenAI Whisper-generated ones",
     "permissions": ["activeTab", "storage"],
-    "host_permissions": [
-        "https://www.youtube.com/*",
-        "https://buttercup.igerman.cc/*",
-        "https://sanchit-gandhi-whisper-jax.hf.space/*"
-    ],
+    "host_permissions": ["https://www.youtube.com/*", "https://buttercup.igerman.cc/*", "https://sanchit-gandhi-whisper-jax.hf.space/*"],
     "content_scripts": [
         {
             "matches": ["*://youtube.com/watch*", "*://*.youtube.com/watch*"],

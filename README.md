@@ -1,7 +1,7 @@
 # Buttercup - Better YouTube Captions
 
 <p align="center">
-  <img src="icons/icon128.png" alt="creepiest icon known to man"/>
+  <img src="icons/icon128.png" alt="cute icon but ai generated very unfortunate"/>
 </p>
 
 A Chrome(ium) extension to enhance your YouTube caption experience. Say goodbye to those horrible auto-generated captions. 
