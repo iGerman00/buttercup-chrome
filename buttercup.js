@@ -25,7 +25,7 @@ const CAPTIONS_OBJECT = {
                 defaultCaptionTrackIndex: 0,
                 visibility: 'ON',
                 hasDefaultTrack: true,
-                captionsInitialState: 'CAPTIONS_INITIAL_STATE_OFF_RECOMMENDED',
+                captionsInitialState: 'CAPTIONS_INITIAL_STATE_OFF_REQUIRED',
             },
         ],
         defaultAudioTrackIndex: 0,
