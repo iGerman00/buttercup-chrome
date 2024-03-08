@@ -7,7 +7,7 @@
     "host_permissions": ["https://www.youtube.com/*", "https://buttercup.igerman.cc/*", "https://sanchit-gandhi-whisper-jax.hf.space/*"],
     "content_scripts": [
         {
-            "matches": ["*://youtube.com/watch*", "*://*.youtube.com/watch*"],
+            "matches": ["*://youtube.com/*", "*://*.youtube.com/*", "*://youtu.be/*"],
             "js": ["content.js"],
             "run_at": "document_start"
         }
