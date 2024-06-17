@@ -13,6 +13,7 @@ Powered by [whisper-jax](https://github.com/sanchit-gandhi/whisper-jax), thanks 
 - **Automatic Replacement:** Replaces YouTube's default auto-captions with Buttercup, not affecting videos with existing real captions. Real captions always take priority over automatically generated ones.
 - **Caching System:** Utilizes an optional [caching database](https://buttercup.igerman.cc) to store video IDs and generated captions for enhanced performance and to avoid hammering the Whisper API.
 - **Translation:** Seamlessly translate all speech to English. An option and a separated database for English-translated captions are available. 
+- **Download:** Quickly download the generated subtitles as a `.srt` file for further use.
 
 ## Installation
 

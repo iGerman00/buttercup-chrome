@@ -24,7 +24,7 @@ chrome.storage.sync.get(['buttercup_cache'], function (result) {
 
 chrome.storage.sync.get(['buttercup_download_srt'], function (result) {
     if (result.buttercup_download_srt === undefined) {
-        chrome.storage.sync.set({ buttercup_download_srt: true });
+        chrome.storage.sync.set({ buttercup_download_srt: false });
     }
 });
 
