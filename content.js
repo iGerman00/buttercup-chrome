@@ -22,6 +22,12 @@ chrome.storage.sync.get(['buttercup_cache'], function (result) {
     }
 });
 
+chrome.storage.sync.get(['buttercup_download_srt'], function (result) {
+    if (result.buttercup_download_srt === undefined) {
+        chrome.storage.sync.set({ buttercup_download_srt: true });
+    }
+});
+
 // Listen for the custom event
 document.addEventListener('requestButtercupTranslate', function () {
     chrome.storage.sync.get(['buttercup_translate'], function (result) {
@@ -46,3 +52,13 @@ document.addEventListener('requestButtercupCache', function () {
         document.dispatchEvent(new CustomEvent('responseButtercupCache', { detail: cache }));
     });
 });
+
+document.addEventListener('requestButtercupDownloadSrt', function () {
+    chrome.storage.sync.get(['buttercup_download_srt'], function (result) {
+        const download = result.buttercup_download_srt;
+        // Send the value back to the page
+        document.dispatchEvent(new CustomEvent('responseButtercupDownloadSrt', { detail: download }));
+    });
+});
+
+document.dispatchEvent(new CustomEvent('buttercupSettingsChanged'));

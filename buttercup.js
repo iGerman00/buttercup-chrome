@@ -41,11 +41,13 @@ const SVG_TRANSLATE = `<?xml version="1.0" encoding="utf-8"?><svg fill="#fff" wi
 let TRANSLATE = null;
 let ENABLED = null;
 let CACHE = null;
+let DOWNLOAD_SRT = null;
 
 // Wrap the event listener in a Promise
 const getButtercupTranslate = new Promise((resolve) => {
     document.addEventListener('responseButtercupTranslate', function (e) {
         TRANSLATE = e.detail;
+        console.info('[Buttercup] Translate: ', TRANSLATE);
         resolve();
     });
     // Request the value of buttercup_translate from the content script
@@ -55,6 +57,7 @@ const getButtercupTranslate = new Promise((resolve) => {
 const getButtercupEnabled = new Promise((resolve) => {
     document.addEventListener('responseButtercupEnabled', function (e) {
         ENABLED = e.detail;
+        console.info('[Buttercup] Enabled: ', ENABLED);
         resolve();
     });
     // Request the value of buttercup_enabled from the content script
@@ -64,16 +67,37 @@ const getButtercupEnabled = new Promise((resolve) => {
 const getButtercupCache = new Promise((resolve) => {
     document.addEventListener('responseButtercupCache', function (e) {
         CACHE = e.detail;
+        console.info('[Buttercup] Cache: ', CACHE);
         resolve();
     });
     // Request the value of buttercup_cache from the content script
     document.dispatchEvent(new CustomEvent('requestButtercupCache', {}));
 });
 
+const getButtercupDownloadSrt = new Promise((resolve) => {
+    document.addEventListener('responseButtercupDownloadSrt', function (e) {
+        DOWNLOAD_SRT = e.detail;
+        console.info('[Buttercup] Download SRT: ', DOWNLOAD_SRT);
+        resolve();
+    });
+    // Request the value of download_srt from the content script
+    document.dispatchEvent(new CustomEvent('requestButtercupDownloadSrt', {}));
+});
+
 async function init() {
     console.info('[Buttercup] Initializing');
-    await Promise.all([getButtercupTranslate, getButtercupEnabled, getButtercupCache]);
+    await Promise.all([getButtercupTranslate, getButtercupEnabled, getButtercupCache, getButtercupDownloadSrt]);
 }
+
+document.addEventListener('buttercupSettingsChanged', async function () {
+    console.info('[Buttercup] Settings changed, re-initializing settings');
+
+    document.dispatchEvent(new CustomEvent('requestButtercupTranslate', {}));
+    document.dispatchEvent(new CustomEvent('requestButtercupEnabled', {}));
+    document.dispatchEvent(new CustomEvent('requestButtercupCache', {}));
+    document.dispatchEvent(new CustomEvent('requestButtercupDownloadSrt', {}));
+    await Promise.all([getButtercupTranslate, getButtercupEnabled, getButtercupCache, getButtercupDownloadSrt]);
+});
 
 const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
     createHTML: (to_escape) => to_escape,
@@ -81,10 +105,6 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
 
 (async function () {
     await init();
-
-    console.info('[Buttercup] Enabled: ', ENABLED);
-    console.info('[Buttercup] Translate: ', TRANSLATE);
-    console.info('[Buttercup] Cache: ', CACHE);
 
     if (!ENABLED) {
         console.info('[Buttercup] Disabled, skipping everything');
@@ -191,6 +211,12 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
         }
     });
 
+    document.addEventListener('buttercupSettingsChanged', function () {
+        console.info('[Buttercup] Settings changed, resetting custom subtitles');
+        customSubtitle = null;
+        setLoading(false);
+    });
+
     let currentURL = location.href;
     observer.observe(document, { childList: true, subtree: true });
 
@@ -240,6 +266,13 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
                         }
 
                         function handleData(data) {
+                            if (DOWNLOAD_SRT) {
+                                if (data !== undefined) {
+                                    if (data.c !== undefined) {
+                                        downloadJsonToSRT(JSON.parse(data.c));
+                                    }
+                                }
+                            }
                             customSubtitle = data.c;
                         }
 
@@ -390,7 +423,46 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
             });
         });
 
+        if (DOWNLOAD_SRT) {
+            downloadJsonToSRT(jsonSubtitles);
+        }
+
         return jsonSubtitles;
+    }
+
+    function downloadJsonToSRT(jsonSubtitles) {
+        console.info('[Buttercup] Downloading SRT');
+        if (jsonSubtitles.c !== undefined) {
+            jsonSubtitles = jsonSubtitles.c;
+        }
+        function msToSRTTime(ms) {
+            const hours = String(Math.floor(ms / 3600000)).padStart(2, '0');
+            const minutes = String(Math.floor((ms % 3600000) / 60000)).padStart(2, '0');
+            const seconds = String(Math.floor((ms % 60000) / 1000)).padStart(2, '0');
+            const milliseconds = String(ms % 1000).padStart(3, '0');
+            return `${hours}:${minutes}:${seconds},${milliseconds}`;
+        }
+    
+        let srtContent = '';
+        jsonSubtitles.events.forEach((event, index) => {
+            const startTime = msToSRTTime(event.tStartMs);
+            const endTime = msToSRTTime(event.tStartMs + event.dDurationMs);
+            const text = event.segs.map(seg => seg.utf8).join('\n');
+            
+            srtContent += `${index + 1}\n${startTime} --> ${endTime}\n${text}\n\n`;
+        });
+
+        srtContent = srtContent.trim();
+
+        const blob = new Blob([srtContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = document.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.srt';
+        a.click();
+        URL.revokeObjectURL(url);
+    
+        return srtContent;
     }
 
     function customTimeToMs(timeStr) {
