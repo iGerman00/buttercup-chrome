@@ -26,7 +26,7 @@ Powered by [whisper-jax](https://github.com/sanchit-gandhi/whisper-jax), thanks 
 Buttercup has no need to spy on you, however:
 - You can opt out of using the cache database in the extension settings.
 - **IP addresses** are stored briefly for rate limiting and are **not linked** to captions or video IDs.
-- The **database source code** is not yet available.
+- The **cache database source code** is available [here](https://gist.github.com/iGerman00/0e21d4b957f1a4917f5bbb817136b83a).
 
 ## Getting Started
 
