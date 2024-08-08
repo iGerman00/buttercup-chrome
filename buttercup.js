@@ -2,6 +2,13 @@
 // Can you tell this used to be a userscript?
 console.info('[Buttercup] Injected');
 
+if (window.trustedTypes && window.trustedTypes.createPolicy) {  
+    // i hate this so much, who thought this was a good idea???
+    window.trustedTypes.createPolicy('default', {  
+        createHTML: (string, sink) => string  
+    }); 
+}
+
 const BUTTON_CLASSNAME = 'ytp-subtitles-button ytp-button';
 
 const CAPTION_TRACK = {
@@ -116,7 +123,7 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
             if (button) {
                 console.info('[Buttercup] Replacing icon');
                 observer.disconnect();
-                button.innerHTML = SVG_BCAPTIONS;
+                button.innerHTML = window.trustedTypes.defaultPolicy.createHTML(SVG_BCAPTIONS);
             }
         });
 
@@ -485,10 +492,10 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
         const element = document.getElementsByClassName(BUTTON_CLASSNAME)[0];
         if (error) {
             element.disabled = false;
-            element.innerHTML = SVG_BCAPTIONS;
+            element.innerHTML = window.trustedTypes.defaultPolicy.createHTML(SVG_BCAPTIONS);
         }
         element.disabled = isLoading;
-        element.innerHTML = isLoading ? SVG_LOADER : SVG_BCAPTIONS;
+        element.innerHTML = window.trustedTypes.defaultPolicy.createHTML(isLoading ? SVG_LOADER : SVG_BCAPTIONS);
     }
 
     function getVideoId() {
