@@ -1,11 +1,27 @@
 # Buttercup - Better YouTube Captions
 
-<p align="center">
-  <img src="icons/icon128.png" alt="cute icon but ai generated very unfortunate"/>
-</p>
+<img src="icons/icon128.png" alt="Buttercup" height="128" align="right"/>
 
-A Chrome(ium) extension to enhance your YouTube caption experience. Say goodbye to those horrible auto-generated captions. 
-Powered by [Groq API](https://groq.com/) for transcription and [Cobalt API](https://github.com/wukko/cobalt) for audio extraction.
+> A Chromium extension to enhance your YouTube caption experience.  
+> Say goodbye to those horrible auto-generated captions.  
+> Powered by [Groq API](https://groq.com/) for transcription  
+> Powered by [Cobalt API](https://github.com/imputnet/cobalt) for audio extraction.
+
+<br>
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/c27529cb-5f45-40ef-8ad3-8a1b8aca6e33" alt="screenshot of extension UI"/>
+  <div align="center">	
+  
+[![Badge indicating count of captions cached](https://img.shields.io/badge/dynamic/json?url=https://buttercup.igerman.cc/api/status&query=%24.count&style=for-the-badge&label=Captions%20cached&color=%23ff5d5b)](https://buttercup.igerman.cc)
+    
+  </div>
+  <div align="center">	
+  
+[<img src="https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a0171bfb928b21a7e00_support_me_on_kofi_beige-p-500.png" alt='Donate on Ko-Fi' height="48">](//ko-fi.com/vizzy)
+    
+  </div>
+</p>
+<!-- ![image](https://github.com/user-attachments/assets/c27529cb-5f45-40ef-8ad3-8a1b8aca6e33) -->
 
 ## Features
 
@@ -28,7 +44,7 @@ Powered by [Groq API](https://groq.com/) for transcription and [Cobalt API](http
 
 Buttercup requires API keys to function:
 
-1. **Groq API Key (Required):** Sign up at [Groq](https://console.groq.com/) to get your API key.
+1. **Groq API Key (Required):** Sign up at [Groq](https://console.groq.com/) to get your API key. It's free!
 2. **Cobalt API Key (Optional):** Some Cobalt instances may require an API key. You can also use a different Cobalt API base URL if needed.
 
 ## Model Selection
@@ -43,7 +59,6 @@ Buttercup supports different Whisper models through the Groq API:
 
 Buttercup has no need to spy on you, however:
 - You can opt out of using the cache database in the extension settings.
-- **IP addresses** are stored briefly for rate limiting and are **not linked** to captions or video IDs.
 - The **cache database source code** is available [here](https://gist.github.com/iGerman00/0e21d4b957f1a4917f5bbb817136b83a).
 - Your API keys are stored locally in your browser and are only sent to the respective API services.
 
