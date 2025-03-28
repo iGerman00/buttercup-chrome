@@ -1,4 +1,4 @@
-# Buttercup - Better YouTube Captions
+# [<img src="icons/icon48.png" alt='Buttercup' height="22">](//buttercup.igerman.cc) Buttercup  - Better YouTube Captions
 
 <img src="icons/icon128.png" alt="Buttercup" height="128" align="right"/>
 
