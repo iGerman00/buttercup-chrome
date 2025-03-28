@@ -10,63 +10,129 @@
     <style type="text/css">
         body {
             width: 400px;
-            height: 400px;
+            height: 500px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
         }
 
-        .controls-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: min-content;
-            width: 100%;
+        .content-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 1rem;
         }
 
         .form-control {
-            margin: 10;
-            width: 80%;
+            width: 100%;
         }
 
         #buttons {
             grid-auto-flow: column !important;
         }
+
+        .tab-content {
+            padding-top: 1rem;
+            width: 100%;
+            display: block;
+        }
+
+        .api-input {
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .footer {
+            margin-top: auto;
+        }
     </style>
 </head>
 
 <body>
-    <div class="max-w-md text-center pt-10">
+    <div class="text-center pt-5 px-4">
         <h1 class="text-5xl font-bold">Buttercup</h1>
-        <p class="text-sm pt-10">
+        <p class="text-sm pt-3 pb-3">
             Replace YouTube's crappy auto-generated subtitles with
             Buttercup's awesome Whisper-generated ones
         </p>
     </div>
-    <div class="controls-container">
-        <div class="form-control">
-            <div class="divider"></div>
-            <label class="label cursor-pointer">
-                <span class="label-text">Enabled</span>
-                <input type="checkbox" class="toggle" id="enabled" checked />
-            </label>
-            <!-- <div class="divider"></div> -->
-            <label class="label cursor-pointer">
-                <span class="label-text">Translate everything to English</span>
-                <input type="checkbox" class="toggle" id="translate" />
-            </label>
-            <!-- <div class="divider"></div> -->
-            <label class="label cursor-pointer">
-                <span class="label-text">Use cache database</span>
-                <input type="checkbox" class="toggle" id="cache" checked />
-            </label>
-            <!-- <div class="divider"></div> -->
-            <label class="label cursor-pointer">
-                <span class="label-text">Download SRT</span>
-                <input type="checkbox" class="toggle" id="download" />
-            </label>
-            <div class="divider"></div>
+    
+    <div role="tablist" class="tabs tabs-boxed mx-auto w-4/5">
+        <a role="tab" class="tab tab-active" id="tab-general">General</a>
+        <a role="tab" class="tab" id="tab-api">API Setup</a>
+    </div>
+    
+    <div class="content-container">
+        <!-- General Settings Tab -->
+        <div id="general-tab" class="tab-content">
+            <div class="divider">Settings</div>
+            <div class="form-control">
+                <label class="label cursor-pointer">
+                    <span class="label-text">Enabled</span>
+                    <input type="checkbox" class="toggle" id="enabled" checked />
+                </label>
+                <label class="label cursor-pointer" id="translate-container">
+                    <span class="label-text">Translate everything to English</span>
+                    <input type="checkbox" class="toggle" id="translate" />
+                </label>
+                <label class="label cursor-pointer">
+                    <span class="label-text">Use cache database</span>
+                    <input type="checkbox" class="toggle" id="cache" checked />
+                </label>
+                <label class="label cursor-pointer">
+                    <span class="label-text">Download SRT</span>
+                    <input type="checkbox" class="toggle" id="download" />
+                </label>
+            </div>
+        </div>
+        
+        <!-- API Setup Tab -->
+        <div id="api-tab" class="tab-content hidden">
+            <div class="divider">Cobalt API</div>
+            <div class="form-control">
+                <label class="label cursor-pointer">
+                    <span class="label-text">Use Cobalt API Key</span>
+                    <input type="checkbox" class="toggle" id="use-cobalt-api-key" checked />
+                </label>
+                
+                <div id="cobalt-api-key-container">
+                    <label class="label">
+                        <span class="label-text">Cobalt API Key</span>
+                    </label>
+                    <input type="password" placeholder="Enter your Cobalt API key" class="input input-bordered api-input" id="cobalt-api-key" />
+                </div>
+                
+                <label class="label">
+                    <span class="label-text">Cobalt API Base URL</span>
+                </label>
+                <input type="text" placeholder="https://api.cobalt.tools" value="https://api.cobalt.tools" class="input input-bordered api-input" id="cobalt-api-base" />
+            </div>
+            
+            <div class="divider">Groq API</div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Groq API Key</span>
+                </label>
+                <input type="password" placeholder="Enter your Groq API key" class="input input-bordered api-input" id="groq-api-key" />
+                
+                <label class="label">
+                    <span class="label-text">Groq Model</span>
+                </label>
+                <select class="select select-bordered w-full api-input" id="groq-model">
+                    <option value="whisper-large-v3">whisper-large-v3 (Best quality, multilingual, translation)</option>
+                    <option value="whisper-large-v3-turbo">whisper-large-v3-turbo (Faster, multilingual)</option>
+                    <option value="distil-whisper-large-v3-en">distil-whisper-large-v3-en (Fastest, English only)</option>
+                </select>
+                <p class="text-xs text-gray-500 mt-1" id="model-translation-note">
+                    Note: Only whisper-large-v3 supports translation
+                </p>
+            </div>
+            
+            <button class="btn btn-primary w-full mt-4 mb-4" id="save-api-settings">Save API Settings</button>
         </div>
     </div>
-    <footer class="footer p-4 bg-neutral text-neutral-content flex flex-row justify-center max-w">
-        <div class="grid grid-flow-col max-w" id="buttons">
+    
+    <footer class="footer p-4 bg-neutral text-neutral-content flex flex-row justify-center">
+        <div class="grid grid-flow-col" id="buttons">
             <a href="https://igerman.cc/" target="_blank" class="btn btn-primary btn-wide btn-sm max-w-24">
                 Contact
             </a>

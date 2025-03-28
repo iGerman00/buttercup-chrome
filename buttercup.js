@@ -42,13 +42,17 @@ const CAPTIONS_OBJECT = {
 // Thank you sam herbert https://github.com/SamHerbert/SVG-Loaders, modified to fit the button
 const SVG_LOADER = `<svg height=100% viewBox="0 0 36 36"width=100% xmlns=http://www.w3.org/2000/svg><defs><linearGradient id=a x1=8.042% x2=65.682% y1=0% y2=23.865%><stop offset=0% stop-color=#fff stop-opacity=0 /><stop offset=63.146% stop-color=#fff stop-opacity=.631 /><stop offset=100% stop-color=#fff /></linearGradient></defs><g fill=none fill-rule=evenodd><g transform="translate(1 1)"><path d="M26 18c0-4.418-3.582-8-8-8"id=Oval-2 stroke=url(#a) stroke-width=4><animateTransform attributeName=transform dur=0.9s from="0 18 18"repeatCount=indefinite to="360 18 18"type=rotate /></path><circle cx=26 cy=18 fill=#fff r=1><animateTransform attributeName=transform dur=0.9s from="0 18 18"repeatCount=indefinite to="360 18 18"type=rotate /></circle></g></g></svg>`;
 const SVG_BCAPTIONS = `<svg class="ytp-subtitles-button-icon" height="100%" version="1.1" viewBox="0 0 36 36" width="100%" fill-opacity="1"><use class="ytp-svg-shadow" xlink:href="#ytp-id-17"></use><path d="M 11 11 C 9.89 11 9 11.9 9 13 L 9 23 C 9 24.1 9.89 25 11 25 L 25 25 C 26.1 25 27 24.1 27 23 L 27 13 C 27 11.9 26.1 11 25 11 L 11 11 Z M 17 17 C 17 17 17 18 16 18 L 13.5 18 C 13.5 18 15.5 18 15.5 16.5 L 13.5 16.5 L 13.5 19.5 L 15.5 19.5 C 15.5 18 13.5 18 13.5 18 L 16 18 C 16 18 17 18 17 19 L 17 20 C 17 20.55 16.55 21 16 21 L 13 21 C 12.45 21 12 20.55 12 20 L 12 16 C 12 15.45 12.45 15 13 15 L 16 15 C 16.55 15 17 15.45 17 16 L 17 17 L 17 17 Z M 24 17 L 22.5 17 L 22.5 16.5 L 20.5 16.5 L 20.5 19.5 L 22.5 19.5 L 22.5 19 L 24 19 L 24 20 C 24 20.55 23.55 21 23 21 L 20 21 C 19.45 21 19 20.55 19 20 L 19 16 C 19 15.45 19.45 15 20 15 L 23 15 C 23.55 15 24 15.45 24 16 L 24 17 L 24 17 Z" fill="#fff" id="ytp-id-17"></path></svg>`; // modified to say bc lol
-const SVG_CAPTIONS = `<svg class="ytp-subtitles-button-icon" height="100%" version="1.1" viewBox="0 0 36 36" width="100%" fill-opacity="1"><use class="ytp-svg-shadow" xlink:href="#ytp-id-17"></use><path d="M11,11 C9.89,11 9,11.9 9,13 L9,23 C9,24.1 9.89,25 11,25 L25,25 C26.1,25 27,24.1 27,23 L27,13 C27,11.9 26.1,11 25,11 L11,11 Z M17,17 L15.5,17 L15.5,16.5 L13.5,16.5 L13.5,19.5 L15.5,19.5 L15.5,19 L17,19 L17,20 C17,20.55 16.55,21 16,21 L13,21 C12.45,21 12,20.55 12,20 L12,16 C12,15.45 12.45,15 13,15 L16,15 C16.55,15 17,15.45 17,16 L17,17 L17,17 Z M24,17 L22.5,17 L22.5,16.5 L20.5,16.5 L20.5,19.5 L22.5,19.5 L22.5,19 L24,19 L24,20 C24,20.55 23.55,21 23,21 L20,21 C19.45,21 19,20.55 19,20 L19,16 C19,15.45 19.45,15 20,15 L23,15 C23.55,15 24,15.45 24,16 L24,17 L24,17 Z" fill="#fff" id="ytp-id-17"></path></svg>`;
+const SVG_CAPTIONS = `<svg class="ytp-subtitles-button-icon" height="100%" version="1.1" viewBox="0 0 36 36" width="100%" fill-opacity="1"><use class="ytp-svg-shadow" xlink:href="#ytp-id-17"></use><path d="M11,11 C9.89,11 9,11.9 9,13 L9,23 C9,24.1 9.89,25 11,25 L25,25 C26.1,25 27,24.1 27,23 L27,13 C27,11.9 26.1,11 25,11 L11,11 Z M17,17 L15.5,17 L15.5,16.5 L13.5,16.5 L13.5,19.5 L15.5,19.5 L15.5,19 L17,19 L17,20 C17,20.55 16.55,21 16,21 L13,21 C12.45,21 12,20.55 12,20 L12,16 C12,15.45 12.45,15 13,15 L16,15 C16.55,15 17,15.45 17,16 L17,17 L17,17 Z M24,17 L22.5,17 L22.5,16.5 L20.5,16.5 L20.5,19.5 L22.5,19.5 L22.5,19 L24,19 L24,20 C24,20.55 23.55,21 23,21 L20,21 C19.45,21 19,20.55 19,20 L19,16 C19,15.45 19.45 15 20,15 L23,15 C23.55,15 24,15.45 24,16 L24,17 L24,17 Z" fill="#fff" id="ytp-id-17"></path></svg>`;
 const SVG_TRANSLATE = `<?xml version="1.0" encoding="utf-8"?><svg fill="#fff" width="800px" height="800px" viewBox="0 0 256 256" id="Flat" xmlns="http://www.w3.org/2000/svg"><path d="M235.57178,214.21094l-56-112a4.00006,4.00006,0,0,0-7.15528,0l-22.854,45.708a92.04522,92.04522,0,0,1-55.57275-20.5752A99.707,99.707,0,0,0,123.90723,60h28.08691a4,4,0,0,0,0-8h-60V32a4,4,0,0,0-8,0V52h-60a4,4,0,0,0,0,8h91.90772a91.74207,91.74207,0,0,1-27.91895,62.03357A91.67371,91.67371,0,0,1,65.23389,86.667a4,4,0,0,0-7.542,2.668,99.63009,99.63009,0,0,0,24.30469,38.02075A91.5649,91.5649,0,0,1,23.99414,148a4,4,0,0,0,0,8,99.54451,99.54451,0,0,0,63.99951-23.22461,100.10427,100.10427,0,0,0,57.65479,22.97192L116.4165,214.21094a4,4,0,1,0,7.15528,3.57812L138.46631,188H213.522l14.89453,29.78906a4,4,0,1,0,7.15528-3.57812ZM142.46631,180l33.52783-67.05566L209.522,180Z"/></svg>`;
 
 let TRANSLATE = null;
 let ENABLED = null;
 let CACHE = null;
 let DOWNLOAD_SRT = null;
+
+// Initialize API configuration
+let apiConfig = null;
+let transcriptionHandler = null;
 
 // Wrap the event listener in a Promise
 const getButtercupTranslate = new Promise((resolve) => {
@@ -91,9 +95,49 @@ const getButtercupDownloadSrt = new Promise((resolve) => {
     document.dispatchEvent(new CustomEvent('requestButtercupDownloadSrt', {}));
 });
 
+// Function to show error message snackbar
+function showErrorSnackbar(message) {
+    console.error('[Buttercup] Error:', message);
+    document.dispatchEvent(new CustomEvent('buttercupShowError', {
+        detail: { message: message }
+    }));
+}
+
+// Get API settings
+const getButtercupApiSettings = new Promise((resolve) => {
+    document.addEventListener('responseButtercupApiSettings', function (e) {
+        console.info('[Buttercup] API Settings received');
+        
+        // Initialize API configuration
+        apiConfig = new APIConfig();
+        
+        // Initialize with settings from the response
+        apiConfig.initFromSettings({
+            useCobaltApiKey: e.detail.useCobaltApiKey,
+            cobaltApiKey: e.detail.cobaltApiKey,
+            cobaltApiBase: e.detail.cobaltApiBase,
+            groqApiKey: e.detail.groqApiKey,
+            groqModel: e.detail.groqModel
+        });
+        
+        // Initialize transcription handler
+        transcriptionHandler = new TranscriptionHandler(apiConfig);
+        
+        resolve();
+    });
+    // Request API settings from the content script
+    document.dispatchEvent(new CustomEvent('requestButtercupApiSettings', {}));
+});
+
 async function init() {
     console.info('[Buttercup] Initializing');
-    await Promise.all([getButtercupTranslate, getButtercupEnabled, getButtercupCache, getButtercupDownloadSrt]);
+    await Promise.all([
+        getButtercupTranslate, 
+        getButtercupEnabled, 
+        getButtercupCache, 
+        getButtercupDownloadSrt,
+        getButtercupApiSettings
+    ]);
 }
 
 document.addEventListener('buttercupSettingsChanged', async function () {
@@ -104,6 +148,12 @@ document.addEventListener('buttercupSettingsChanged', async function () {
     document.dispatchEvent(new CustomEvent('requestButtercupCache', {}));
     document.dispatchEvent(new CustomEvent('requestButtercupDownloadSrt', {}));
     await Promise.all([getButtercupTranslate, getButtercupEnabled, getButtercupCache, getButtercupDownloadSrt]);
+});
+
+document.addEventListener('buttercupApiSettingsChanged', async function () {
+    console.info('[Buttercup] API Settings changed, re-initializing API settings');
+    document.dispatchEvent(new CustomEvent('requestButtercupApiSettings', {}));
+    await getButtercupApiSettings;
 });
 
 const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
@@ -224,6 +274,12 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
         setLoading(false);
     });
 
+    document.addEventListener('buttercupApiSettingsChanged', function () {
+        console.info('[Buttercup] API Settings changed, resetting custom subtitles');
+        customSubtitle = null;
+        setLoading(false);
+    });
+
     let currentURL = location.href;
     observer.observe(document, { childList: true, subtree: true });
 
@@ -251,6 +307,17 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
                         clickSubtitleButton();
                         setLoading(true);
 
+                        // Check if API keys are set
+                        if (!apiConfig.hasAllApiKeys()) {
+                            const errorMsg = apiConfig.getUseCobaltApiKey()
+                                ? 'API keys not set. Please set up Cobalt and Groq API keys in the extension settings.'
+                                : 'Groq API key not set. Please set up the Groq API key in the extension settings.';
+                            showErrorSnackbar(errorMsg);
+                            setLoading(false, true);
+                            return this.response;
+                        }
+
+                        // Use cache if enabled
                         let headers = {
                             'BC-VideoID': getVideoId(),
                         };
@@ -263,28 +330,91 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
                         function handleResponse(response) {
                             if (response.status === 200) {
                                 console.info('[Buttercup] Using cached subtitles');
-                                setLoading(false);
-                                clickSubtitleButton();
-                                return response.json();
-                            } else {
-                                console.info('[Buttercup] Getting subtitles from HF');
-                                getSubtitles();
-                            }
-                        }
-
-                        function handleData(data) {
-                            if (DOWNLOAD_SRT) {
-                                if (data !== undefined) {
-                                    if (data.c !== undefined) {
+                                return response.json().then(data => {
+                                    if (DOWNLOAD_SRT && data !== undefined && data.c !== undefined) {
                                         downloadJsonToSRT(JSON.parse(data.c));
                                     }
-                                }
+                                    customSubtitle = data.c;
+                                    setLoading(false);
+                                    clickSubtitleButton();
+                                });
+                            } else {
+                                console.info('[Buttercup] Getting subtitles from API');
+                                processVideoWithAPI();
+                                return Promise.reject('Cache miss');
                             }
-                            customSubtitle = data.c;
                         }
 
                         function handleError(error) {
                             console.error('[Buttercup] Error fetching subtitles: ', error);
+                            showErrorSnackbar(`Error fetching subtitles: ${error.message || error || 'Unknown error'}`);
+                            setLoading(false, true);
+                            // Make sure to click the button again to reset the UI
+                            setTimeout(() => {
+                                clickSubtitleButton();
+                            }, 100);
+                        }
+
+                        // Process video with Cobalt and Groq APIs
+                        function processVideoWithAPI() {
+                            const videoId = getVideoId();
+                            
+                            transcriptionHandler.processVideo(
+                                videoId,
+                                TRANSLATE,
+                                // Progress callback
+                                (message) => {
+                                    console.info(`[Buttercup] ${message}`);
+                                },
+                                // Success callback
+                                (youtubeFormat) => {
+                                    console.info('[Buttercup] Transcription successful');
+                                    customSubtitle = JSON.stringify(youtubeFormat);
+                                    
+                                    // Cache subtitles if enabled
+                                    if (CACHE) {
+                                        fetch('https://buttercup.igerman.cc/', {
+                                            method: 'POST',
+                                            headers: headers,
+                                            body: JSON.stringify({
+                                                id: videoId,
+                                                captions: customSubtitle,
+                                            }),
+                                        })
+                                        .then(response => {
+                                            if (response.status === 200) {
+                                                console.info('[Buttercup] Subtitles cached');
+                                            } else {
+                                                console.error('[Buttercup] Error caching subtitles: ', response.status);
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('[Buttercup] Error caching subtitles: ', error);
+                                        });
+                                    }
+                                    
+                                    // Generate SRT if needed
+                                    if (DOWNLOAD_SRT) {
+                                        transcriptionHandler.generateSRT(
+                                            youtubeFormat,
+                                            document.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() + '.srt'
+                                        );
+                                    }
+                                    
+                                    setLoading(false);
+                                    clickSubtitleButton();
+                                },
+                                // Error callback
+                                (error) => {
+                                    console.error('[Buttercup] Transcription error: ', error);
+                                    showErrorSnackbar(`Transcription error: ${error.message || 'Unknown error'}`);
+                                    setLoading(false, true);
+                                    // Make sure to click the button again to reset the UI
+                                    setTimeout(() => {
+                                        clickSubtitleButton();
+                                    }, 100);
+                                }
+                            );
                         }
 
                         // Fetch subtitles from cache if available
@@ -293,12 +423,16 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
                                 headers: headers,
                             })
                                 .then(handleResponse)
-                                .then(handleData)
-                                .catch(handleError);
+                                .catch(error => {
+                                    // Only show error if it's not a cache miss
+                                    if (error !== 'Cache miss') {
+                                        handleError(error);
+                                    }
+                                });
                         } else {
-                            // If user opted out of cache, proceed as if there is no cache
+                            // If user opted out of cache, proceed directly to API
                             console.info('[Buttercup] Opted out of cache, not fetching subtitles from cache');
-                            getSubtitles();
+                            processVideoWithAPI();
                         }
                     }
                     return customSubtitle;
@@ -311,131 +445,6 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
     }
     // lobotomize and plant gay thoughts to xmlhttprequest
     window.XMLHttpRequest = CustomXMLHttpRequest;
-
-    // override /youtubei/v1/player, the response is json, we need to inject an empty captions object into it
-
-    function getSubtitles() {
-        function handleResponse(response) {
-            if (response.status === 200) {
-                console.info('[Buttercup] Subtitles cached');
-            } else {
-                console.error('[Buttercup] Error caching subtitles: ', response.status);
-            }
-        }
-
-        function handleError(error) {
-            console.error('[Buttercup] Error caching subtitles: ', error);
-        }
-
-        function handleData(data) {
-            const took = data.data[2];
-            const subtitles = data.data[1];
-            console.info('[Buttercup] Got custom subtitles in ' + took + 's');
-            customSubtitle = JSON.stringify(customFormatToJson(subtitles));
-
-            let headers = {
-                'Content-Type': 'application/json',
-                'BC-VideoID': getVideoId(),
-            };
-
-            if (TRANSLATE) {
-                headers['BC-Translate'] = 'true';
-            }
-
-            // Cache subtitles if enabled
-            if (CACHE) {
-                fetch('https://buttercup.igerman.cc/', {
-                    method: 'POST',
-                    headers: headers,
-                    body: JSON.stringify({
-                        id: getVideoId(),
-                        captions: customSubtitle,
-                    }),
-                })
-                    .then(handleResponse)
-                    .catch(handleError);
-            } else {
-                console.info('[Buttercup] Opted out of cache, not caching subtitles');
-            }
-        }
-
-        // Function to handle fetch error
-        function handleFetchError(error) {
-            setLoading(false, true);
-            console.error('Error:', error);
-        }
-
-        // Function to handle finally
-        function handleFinally() {
-            setLoading(false);
-            clickSubtitleButton();
-        }
-
-        // Thanks to sanchit-gandhi and their Huggingface space for the whisper-jax API!
-        fetch('https://sanchit-gandhi-whisper-jax.hf.space/api/predict_2', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                data: [window.location.href, TRANSLATE ? 'translate' : 'transcribe', true],
-            }),
-        })
-            .then((response) => response.json())
-            .then(handleData)
-            .catch(handleFetchError)
-            .finally(handleFinally);
-    }
-
-    function customFormatToJson(subtitleContent) {
-        console.info('[Buttercup] Converting custom format to JSON');
-        // Whisper-JAX, or at least the huggingface space, returns subtitles in a custom format that's not even SRT, disgusting fortune, time to parse
-        // YouTube expects a completely different format of its own, they call it "json3", we'll convert to that right away
-
-        const subtitleBlocks = subtitleContent.split('\n');
-        const jsonSubtitles = { events: [] };
-
-        // insert newlines into text at the nearest space if it's longer than 64 characters
-        function insertNewlines(text) {
-            let newText = '';
-            let lineLength = 0;
-
-            text.split(' ').forEach((word) => {
-                if (lineLength + word.length <= 64) {
-                    newText += ' ' + word;
-                    lineLength += word.length + 1; // +1 for the space
-                } else {
-                    newText += '\n' + word;
-                    lineLength = word.length;
-                }
-            });
-
-            return newText.trim();
-        }
-
-        subtitleBlocks.forEach((block) => {
-            const timeTextSplit = block.split('] ');
-            const timeRange = timeTextSplit[0].replace('[', '').split(' -> ');
-            const startTime = customTimeToMs(timeRange[0]);
-            const endTime = customTimeToMs(timeRange[1]);
-            const text = timeTextSplit[1].trim();
-
-            // Insert newlines into the text
-            const newText = insertNewlines(text);
-
-            jsonSubtitles.events.push({
-                tStartMs: startTime,
-                dDurationMs: endTime - startTime,
-                segs: [{ utf8: newText }],
-            });
-        });
-
-        if (DOWNLOAD_SRT) {
-            downloadJsonToSRT(jsonSubtitles);
-        }
-
-        return jsonSubtitles;
-    }
 
     function downloadJsonToSRT(jsonSubtitles) {
         console.info('[Buttercup] Downloading SRT');
@@ -472,30 +481,32 @@ const escapeHTMLPolicy = trustedTypes.createPolicy('forceInner', {
         return srtContent;
     }
 
-    function customTimeToMs(timeStr) {
-        if (!timeStr || !timeStr.includes(':')) return 0;
-        const [hoursMinSec, milli] = timeStr.split('.');
-        // example: 15:22 570, if hours then 01:15:22 570
-        // idk if it messes up with hours, i hope not i havent tested
-        const hours = hoursMinSec.length > 5 ? hoursMinSec.split(':')[0] : 0;
-        const minutes = hoursMinSec.length > 5 ? hoursMinSec.split(':')[1] : hoursMinSec.split(':')[0];
-        const seconds = hoursMinSec.length > 5 ? hoursMinSec.split(':')[2] : hoursMinSec.split(':')[1];
-        const milliseconds = milli || 0;
-        return parseInt(hours) * 3600000 + parseInt(minutes) * 60000 + parseInt(seconds) * 1000 + parseInt(milliseconds);
-    }
-
     function clickSubtitleButton() {
-        document.getElementsByClassName(BUTTON_CLASSNAME)[0].click();
+        const button = document.getElementsByClassName(BUTTON_CLASSNAME)[0];
+        if (button) {
+            console.info('[Buttercup] Clicking subtitle button');
+            button.click();
+        } else {
+            console.error('[Buttercup] Could not find caption button element');
+        }
     }
 
     function setLoading(isLoading, error) {
         const element = document.getElementsByClassName(BUTTON_CLASSNAME)[0];
+        if (!element) {
+            console.error('[Buttercup] Could not find caption button element');
+            return;
+        }
+        
         if (error) {
             element.disabled = false;
             element.innerHTML = window.trustedTypes.defaultPolicy.createHTML(SVG_BCAPTIONS);
+        } else {
+            element.disabled = isLoading;
+            element.innerHTML = window.trustedTypes.defaultPolicy.createHTML(isLoading ? SVG_LOADER : SVG_BCAPTIONS);
         }
-        element.disabled = isLoading;
-        element.innerHTML = window.trustedTypes.defaultPolicy.createHTML(isLoading ? SVG_LOADER : SVG_BCAPTIONS);
+        
+        console.info(`[Buttercup] Set loading state: ${isLoading}, error: ${!!error}`);
     }
 
     function getVideoId() {

@@ -1,10 +1,15 @@
 {
     "manifest_version": 3,
     "name": "Buttercup",
-    "version": "0.0.26",
+    "version": "0.1.0",
     "description": "Replace YouTube auto captions with OpenAI Whisper-generated ones",
     "permissions": ["activeTab", "storage", "scripting"],
-    "host_permissions": ["https://www.youtube.com/*", "https://buttercup.igerman.cc/*", "https://sanchit-gandhi-whisper-jax.hf.space/*"],
+    "host_permissions": [
+        "https://www.youtube.com/*", 
+        "https://buttercup.igerman.cc/*", 
+        "https://api.cobalt.tools/*",
+        "https://api.groq.com/*"
+    ],
     "content_scripts": [
         {
             "matches": ["*://youtube.com/*", "*://*.youtube.com/*", "*://youtu.be/*"],
@@ -14,7 +19,13 @@
     ],
     "web_accessible_resources": [
         {
-            "resources": ["buttercup.js"],
+            "resources": [
+                "buttercup.js",
+                "api/cobalt.js",
+                "api/groq.js",
+                "api/config.js",
+                "api/transcription.js"
+            ],
             "matches": ["<all_urls>"]
         }
     ],
