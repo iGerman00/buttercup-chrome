@@ -29,9 +29,11 @@
 - **Automatic Replacement:** Replaces YouTube's default auto-captions with Buttercup, not affecting videos with existing real captions. Real captions always take priority over automatically generated ones.
 - **Caching System:** Utilizes an optional [caching database](https://buttercup.igerman.cc) to store video IDs and generated captions for enhanced performance.
 - **Translation:** Seamlessly translate all speech to English (only available with the whisper-large-v3 model).
+- **Word-Level Timestamps:** Uses word-level timestamps with a configurable sliding window to create better-formatted subtitles with precise timing.
 - **Download:** Quickly download the generated subtitles as an `.srt` file for further use.
 - **Multiple Models:** Choose between different Whisper models for different speed/quality tradeoffs.
 - **Flexible API Setup:** Configure your own API keys for Cobalt and Groq.
+- **Model Prompting:** Guide the model's style or specify how to spell unfamiliar words with customizable prompts.
 
 ## Installation
 
@@ -70,6 +72,21 @@ Upon clicking the captions button, the icon of which will be replaced with `BC`,
 ## Translation
 
 When you enable translation after clicking the extension's icon, Buttercup will translate all speech to English. Note that translation is only available with the whisper-large-v3 model. If you select a different model, the translation option will be disabled.
+
+## Advanced Features
+
+### Word-Level Timestamps
+Buttercup uses word-level timestamps to create better-formatted subtitles. This feature:
+- Provides more precise timing for each word
+- Uses a sliding window to combine words into readable lines
+- Is fully configurable - adjust words per line and maximum line length
+- Can be disabled to fall back to segment-level timestamps
+
+### Model Prompting
+You can guide the model's transcription style or help it with unfamiliar words:
+- Enter a prompt (up to 896 characters) to influence how the model transcribes
+- Useful for technical content, names, or specific terminology
+- Helps maintain consistent style across transcriptions
 
 ## Support & Feedback
 
