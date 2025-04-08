@@ -15,25 +15,48 @@ const groqModel = document.getElementById('groq-model');
 const modelTranslationNote = document.getElementById('model-translation-note');
 const saveApiSettings = document.getElementById('save-api-settings');
 
+// Advanced settings elements
+const useWordTimestamps = document.getElementById('use-word-timestamps');
+const wordTimestampSettings = document.getElementById('word-timestamp-settings');
+const wordsPerLine = document.getElementById('words-per-line');
+const maxLineLength = document.getElementById('max-line-length');
+const modelPrompt = document.getElementById('model-prompt');
+const saveAdvancedSettings = document.getElementById('save-advanced-settings');
+
 // Tab navigation elements
 const tabGeneral = document.getElementById('tab-general');
 const tabApi = document.getElementById('tab-api');
+const tabAdvanced = document.getElementById('tab-advanced');
 const generalTabContent = document.getElementById('general-tab');
 const apiTabContent = document.getElementById('api-tab');
+const advancedTabContent = document.getElementById('advanced-tab');
 
 // Tab navigation
 tabGeneral.addEventListener('click', () => {
     tabGeneral.classList.add('tab-active');
     tabApi.classList.remove('tab-active');
+    tabAdvanced.classList.remove('tab-active');
     generalTabContent.classList.remove('hidden');
     apiTabContent.classList.add('hidden');
+    advancedTabContent.classList.add('hidden');
 });
 
 tabApi.addEventListener('click', () => {
     tabApi.classList.add('tab-active');
     tabGeneral.classList.remove('tab-active');
+    tabAdvanced.classList.remove('tab-active');
     apiTabContent.classList.remove('hidden');
     generalTabContent.classList.add('hidden');
+    advancedTabContent.classList.add('hidden');
+});
+
+tabAdvanced.addEventListener('click', () => {
+    tabAdvanced.classList.add('tab-active');
+    tabGeneral.classList.remove('tab-active');
+    tabApi.classList.remove('tab-active');
+    advancedTabContent.classList.remove('hidden');
+    generalTabContent.classList.add('hidden');
+    apiTabContent.classList.add('hidden');
 });
 
 // Function to update translation availability based on selected model
@@ -89,6 +112,15 @@ function toggleCobaltApiKeyVisibility() {
     }
 }
 
+// Function to toggle word timestamp settings visibility
+function toggleWordTimestampSettings() {
+    if (useWordTimestamps.checked) {
+        wordTimestampSettings.classList.remove('hidden');
+    } else {
+        wordTimestampSettings.classList.add('hidden');
+    }
+}
+
 // Function to show an alert in the popup
 function showAlert(message, type = 'success') {
     // Remove any existing alerts
@@ -117,7 +149,14 @@ function showAlert(message, type = 'success') {
     `;
     
     // Add the alert to the current tab content
-    const currentTabContent = tabGeneral.classList.contains('tab-active') ? generalTabContent : apiTabContent;
+    let currentTabContent;
+    if (tabGeneral.classList.contains('tab-active')) {
+        currentTabContent = generalTabContent;
+    } else if (tabApi.classList.contains('tab-active')) {
+        currentTabContent = apiTabContent;
+    } else {
+        currentTabContent = advancedTabContent;
+    }
     currentTabContent.appendChild(alertElement);
     
     // Remove the alert after 3 seconds
@@ -187,6 +226,11 @@ groqModel.addEventListener('change', () => {
     updateTranslationAvailability();
 });
 
+// Event listener for word timestamps toggle
+useWordTimestamps.addEventListener('change', () => {
+    toggleWordTimestampSettings();
+});
+
 // API settings event listeners
 saveApiSettings.addEventListener('click', () => {
     // Validate required fields
@@ -231,6 +275,54 @@ saveApiSettings.addEventListener('click', () => {
     });
 });
 
+// Advanced settings event listeners
+saveAdvancedSettings.addEventListener('click', () => {
+    // Validate inputs
+    const wordsPerLineValue = parseInt(wordsPerLine.value);
+    const promptLength = modelPrompt.value.length;
+    const maxLineLengthValue = parseInt(maxLineLength.value);
+    
+    if (isNaN(wordsPerLineValue) || wordsPerLineValue < 1 || wordsPerLineValue > 20) {
+        showAlert('Words per line must be between 1 and 20', 'error');
+        return;
+    }
+    
+    if (isNaN(maxLineLengthValue) || maxLineLengthValue < 20 || maxLineLengthValue > 120) {
+        showAlert('Maximum line length must be between 20 and 120 characters', 'error');
+        return;
+    }
+    
+    if (promptLength > 896) {
+        showAlert('Prompt must be 896 characters or less', 'error');
+        return;
+    }
+    
+    // Save advanced settings to Chrome storage
+    const settings = {
+        buttercup_use_word_timestamps: useWordTimestamps.checked,
+        buttercup_words_per_line: wordsPerLineValue,
+        buttercup_max_line_length: maxLineLengthValue,
+        buttercup_prompt: modelPrompt.value
+    };
+    
+    chrome.storage.sync.set(settings);
+    
+    // Show success message
+    showAlert('Advanced settings saved successfully!', 'success');
+    
+    // Notify any open YouTube tabs about the settings change
+    chrome.tabs.query({ url: "*://*.youtube.com/*" }, (tabs) => {
+        tabs.forEach(tab => {
+            chrome.scripting.executeScript({
+                target: { tabId: tab.id },
+                func: () => {
+                    document.dispatchEvent(new CustomEvent('buttercupApiSettingsChanged'));
+                }
+            }).catch(err => console.error('Error executing script:', err));
+        });
+    });
+});
+
 // Load settings from Chrome storage
 chrome.storage.sync.get([
     'buttercup_enabled',
@@ -241,7 +333,11 @@ chrome.storage.sync.get([
     'buttercup_cobalt_api_key',
     'buttercup_cobalt_api_base',
     'buttercup_groq_api_key',
-    'buttercup_groq_model'
+    'buttercup_groq_model',
+    'buttercup_use_word_timestamps',
+    'buttercup_words_per_line',
+    'buttercup_max_line_length',
+    'buttercup_prompt'
 ], (result) => {
     // General settings
     enabled.checked = result.buttercup_enabled !== false;
@@ -270,9 +366,24 @@ chrome.storage.sync.get([
     if (result.buttercup_groq_model) {
         groqModel.value = result.buttercup_groq_model;
     }
-    
     // Update translation availability based on the selected model
     updateTranslationAvailability();
+    
+    // Advanced settings
+    useWordTimestamps.checked = result.buttercup_use_word_timestamps !== false;
+    toggleWordTimestampSettings();
+    
+    if (result.buttercup_words_per_line) {
+        wordsPerLine.value = result.buttercup_words_per_line;
+    }
+    
+    if (result.buttercup_max_line_length) {
+        maxLineLength.value = result.buttercup_max_line_length;
+    }
+    
+    if (result.buttercup_prompt) {
+        modelPrompt.value = result.buttercup_prompt;
+    }
 });
 
 // Check if API keys are set and show a warning if not

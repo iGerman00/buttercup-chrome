@@ -55,10 +55,11 @@
             Buttercup's awesome Whisper-generated ones
         </p>
     </div>
-    
     <div role="tablist" class="tabs tabs-boxed mx-auto w-4/5">
         <a role="tab" class="tab tab-active" id="tab-general">General</a>
         <a role="tab" class="tab" id="tab-api">API Setup</a>
+        <a role="tab" class="tab" id="tab-advanced">Advanced</a>
+    </div>
     </div>
     
     <div class="content-container">
@@ -128,6 +129,42 @@
             </div>
             
             <button class="btn btn-primary w-full mt-4 mb-4" id="save-api-settings">Save API Settings</button>
+        </div>
+        
+        <!-- Advanced Settings Tab -->
+        <div id="advanced-tab" class="tab-content hidden">
+            <div class="divider">Word-Level Timestamps</div>
+            <div class="form-control">
+                <label class="label cursor-pointer">
+                    <span class="label-text">Use word-level timestamps</span>
+                    <input type="checkbox" class="toggle" id="use-word-timestamps" checked />
+                </label>
+                
+                <div id="word-timestamp-settings">
+                    <label class="label">
+                        <span class="label-text">Words per line</span>
+                    </label>
+                    <input type="number" min="1" max="20" value="12" class="input input-bordered w-full mb-2" id="words-per-line" />
+                    
+                    <label class="label">
+                        <span class="label-text">Maximum line length (characters)</span>
+                    </label>
+                    <input type="number" min="20" max="120" value="64" class="input input-bordered w-full mb-2" id="max-line-length" />
+                </div>
+            </div>
+            
+            <div class="divider">Model Prompting</div>
+            <div class="form-control">
+                <label class="label">
+                    <span class="label-text">Prompt for the model</span>
+                </label>
+                <textarea class="textarea textarea-bordered h-24" placeholder="Enter a prompt to guide the model's style or specify how to spell unfamiliar words" id="model-prompt" maxlength="896"></textarea>
+                <p class="text-xs text-gray-500 mt-1">
+                    Limited to 896 characters (recommended ~500). Use this to guide the model's style or specify how to spell unfamiliar words.
+                </p>
+            </div>
+            
+            <button class="btn btn-primary w-full mt-4 mb-4" id="save-advanced-settings">Save Advanced Settings</button>
         </div>
     </div>
     

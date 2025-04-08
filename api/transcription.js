@@ -123,15 +123,32 @@ class TranscriptionHandler {
             onProgress(translate ? 'Translating audio...' : 'Transcribing audio...');
 
             // Step 5: Transcribe or translate using Groq API with the downloaded file
+            // Prepare options for transcription/translation
+            const options = {
+                wordTimestamps: this.apiConfig.getUseWordTimestamps()
+            };
+            
+            // Add prompt if available
+            const prompt = this.apiConfig.getPrompt();
+            if (prompt && prompt.trim() !== '') {
+                options.prompt = prompt;
+            }
+            
             let transcriptionResult;
             if (translate) {
-                transcriptionResult = await this.groqAPI.translate(audioBlob);
+                transcriptionResult = await this.groqAPI.translate(audioBlob, options);
             } else {
-                transcriptionResult = await this.groqAPI.transcribe(audioBlob);
+                transcriptionResult = await this.groqAPI.transcribe(audioBlob, options);
             }
 
-            // Step 6: Convert to YouTube format
-            const youtubeFormat = this.groqAPI.convertToYouTubeFormat(transcriptionResult);
+            // Step 6: Convert to YouTube format with word-level timestamps if enabled
+            const formatOptions = {
+                useWordTimestamps: this.apiConfig.getUseWordTimestamps(),
+                wordsPerLine: this.apiConfig.getWordsPerLine(),
+                maxLineLength: this.apiConfig.getMaxLineLength()
+            };
+            
+            const youtubeFormat = this.groqAPI.convertToYouTubeFormat(transcriptionResult, formatOptions);
             
             // Step 7: Notify success
             onSuccess(youtubeFormat);

@@ -121,8 +121,13 @@ class GroqAPI {
                 formData.append('prompt', options.prompt);
             }
             
-            // Add timestamp granularities if needed
+            // Add timestamp granularities
             formData.append('timestamp_granularities[]', 'segment');
+            
+            // Add word-level timestamps if enabled in options
+            if (options.wordTimestamps) {
+                formData.append('timestamp_granularities[]', 'word');
+            }
             
             const response = await fetch(`${this.baseUrl}/transcriptions`, {
                 method: 'POST',
@@ -183,8 +188,13 @@ class GroqAPI {
                 formData.append('prompt', options.prompt);
             }
             
-            // Add timestamp granularities if needed
+            // Add timestamp granularities
             formData.append('timestamp_granularities[]', 'segment');
+            
+            // Add word-level timestamps if enabled in options
+            if (options.wordTimestamps) {
+                formData.append('timestamp_granularities[]', 'word');
+            }
             
             const response = await fetch(`${this.baseUrl}/translations`, {
                 method: 'POST',
@@ -209,19 +219,26 @@ class GroqAPI {
     /**
      * Convert Groq API response to YouTube caption format
      * @param {Object} response - The Groq API response
+     * @param {Object} options - Formatting options
+     * @param {boolean} options.useWordTimestamps - Whether to use word-level timestamps
+     * @param {number} options.wordsPerLine - Number of words per line (default: 7)
+     * @param {number} options.maxLineLength - Maximum line length in characters (default: 64)
      * @returns {Object} - YouTube caption format object
      */
-    convertToYouTubeFormat(response) {
+    convertToYouTubeFormat(response, options = {}) {
         try {
             const jsonSubtitles = { events: [] };
+            const useWordTimestamps = options.useWordTimestamps || false;
+            const wordsPerLine = options.wordsPerLine || 12;
+            const maxLineLength = options.maxLineLength || 64;
             
-            // Insert newlines into text at the nearest space if it's longer than 64 characters
+            // Insert newlines into text at the nearest space if it's longer than maxLineLength characters
             function insertNewlines(text) {
                 let newText = '';
                 let lineLength = 0;
                 
                 text.split(' ').forEach((word) => {
-                    if (lineLength + word.length <= 64) {
+                    if (lineLength + word.length <= maxLineLength) {
                         newText += (lineLength > 0 ? ' ' : '') + word;
                         lineLength += word.length + (lineLength > 0 ? 1 : 0); // +1 for the space
                     } else {
@@ -233,8 +250,58 @@ class GroqAPI {
                 return newText.trim();
             }
             
-            // Process segments from the response
-            if (response.segments && response.segments.length > 0) {
+            // Process using word-level timestamps if available and enabled
+            if (useWordTimestamps && response.words && response.words.length > 0) {
+                // Group words into lines based on wordsPerLine setting
+                const words = response.words;
+                let currentLine = [];
+                let currentLineLength = 0;
+                let lineStartTime = 0;
+                
+                for (let i = 0; i < words.length; i++) {
+                    const word = words[i];
+                    
+                    // Start a new line if this is the first word or if we've reached the words per line limit
+                    if (currentLine.length === 0) {
+                        lineStartTime = word.start;
+                        currentLine.push(word);
+                        currentLineLength = word.word.length;
+                    } else if (currentLine.length < wordsPerLine && currentLineLength + word.word.length + 1 <= maxLineLength) {
+                        // Add to current line if we haven't reached the limit
+                        currentLine.push(word);
+                        currentLineLength += word.word.length + 1; // +1 for space
+                    } else {
+                        // Process the current line
+                        const lineEndTime = currentLine[currentLine.length - 1].end;
+                        const lineText = currentLine.map(w => w.word).join(' ');
+                        
+                        jsonSubtitles.events.push({
+                            tStartMs: lineStartTime * 1000,
+                            dDurationMs: (lineEndTime - lineStartTime) * 1000,
+                            segs: [{ utf8: lineText }]
+                        });
+                        
+                        // Start a new line with the current word
+                        currentLine = [word];
+                        currentLineLength = word.word.length;
+                        lineStartTime = word.start;
+                    }
+                }
+                
+                // Process the last line if there are any words left
+                if (currentLine.length > 0) {
+                    const lineEndTime = currentLine[currentLine.length - 1].end;
+                    const lineText = currentLine.map(w => w.word).join(' ');
+                    
+                    jsonSubtitles.events.push({
+                        tStartMs: lineStartTime * 1000,
+                        dDurationMs: (lineEndTime - lineStartTime) * 1000,
+                        segs: [{ utf8: lineText }]
+                    });
+                }
+            }
+            // Fall back to segment-level timestamps
+            else if (response.segments && response.segments.length > 0) {
                 response.segments.forEach(segment => {
                     const startTimeMs = segment.start * 1000;
                     const durationMs = (segment.end - segment.start) * 1000;

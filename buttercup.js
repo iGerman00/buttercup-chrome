@@ -117,7 +117,11 @@ const getButtercupApiSettings = new Promise((resolve) => {
             cobaltApiKey: e.detail.cobaltApiKey,
             cobaltApiBase: e.detail.cobaltApiBase,
             groqApiKey: e.detail.groqApiKey,
-            groqModel: e.detail.groqModel
+            groqModel: e.detail.groqModel,
+            useWordTimestamps: e.detail.useWordTimestamps,
+            wordsPerLine: e.detail.wordsPerLine,
+            maxLineLength: e.detail.maxLineLength,
+            prompt: e.detail.prompt
         });
         
         // Initialize transcription handler
