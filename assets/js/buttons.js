@@ -287,8 +287,8 @@ saveAdvancedSettings.addEventListener('click', () => {
         return;
     }
     
-    if (isNaN(maxLineLengthValue) || maxLineLengthValue < 20 || maxLineLengthValue > 120) {
-        showAlert('Maximum line length must be between 20 and 120 characters', 'error');
+    if (isNaN(maxLineLengthValue) || maxLineLengthValue < 0 || maxLineLengthValue > 20) {
+        showAlert('Words per line break must be between 0 and 20', 'error');
         return;
     }
     

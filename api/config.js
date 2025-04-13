@@ -11,8 +11,8 @@ class APIConfig {
         this.groqApiKey = null;
         this.groqModel = 'whisper-large-v3';
         this.useWordTimestamps = true;
-        this.wordsPerLine = 12;
-        this.maxLineLength = 64;
+        this.wordsPerLine = 16;
+        this.maxLineLength = 8;
         this.prompt = "Today, we're diving deep—yes, really deep—into Apple's latest marvel: the iPhone 15 Pro Max! Is it worth the hype (and the hefty price)? Let's find out. First impressions: sleek, powerful, and surprisingly lightweight. But wait… what's this? USB-C instead of Lightning? Finally! Cameras: 48MP main, 5x optical zoom—insane quality, folks. Battery life? Mind-blowing; lasted 14+ hours of heavy use. Verdict: it's fantastic—but do you need one? Well, that's entirely up to you. Like, subscribe, comment below";
         
         // Initialize API instances
@@ -255,7 +255,7 @@ class APIConfig {
     
     /**
      * Set the maximum line length
-     * @param {number} length - The maximum line length in characters
+     * @param {number} length - The maximum words before inserting a line break (0 to disable line breaks)
      */
     setMaxLineLength(length) {
         this.maxLineLength = length;
@@ -295,7 +295,7 @@ class APIConfig {
     
     /**
      * Get the maximum line length
-     * @returns {number} The maximum line length in characters
+     * @returns {number} The maximum words before inserting a line break (0 means no line breaks)
      */
     getMaxLineLength() {
         return this.maxLineLength;

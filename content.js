@@ -71,13 +71,18 @@ chrome.storage.sync.get(['buttercup_use_word_timestamps'], function (result) {
 
 chrome.storage.sync.get(['buttercup_words_per_line'], function (result) {
     if (result.buttercup_words_per_line === undefined) {
-        chrome.storage.sync.set({ buttercup_words_per_line: 12 });
+        chrome.storage.sync.set({ buttercup_words_per_line: 16 });
     }
 });
 
 chrome.storage.sync.get(['buttercup_max_line_length'], function (result) {
     if (result.buttercup_max_line_length === undefined) {
-        chrome.storage.sync.set({ buttercup_max_line_length: 64 });
+        chrome.storage.sync.set({ buttercup_max_line_length: 8 });
+    } else if (result.buttercup_max_line_length > 20) {
+        // Convert old character-based setting to word-based setting
+        // If the old value was the default 64 characters, set to new default of 6 words
+        // Otherwise, set to a reasonable value of 6 words
+        chrome.storage.sync.set({ buttercup_max_line_length: 6 });
     }
 });
 

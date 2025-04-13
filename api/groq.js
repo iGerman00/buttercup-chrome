@@ -221,8 +221,8 @@ class GroqAPI {
      * @param {Object} response - The Groq API response
      * @param {Object} options - Formatting options
      * @param {boolean} options.useWordTimestamps - Whether to use word-level timestamps
-     * @param {number} options.wordsPerLine - Number of words per line (default: 7)
-     * @param {number} options.maxLineLength - Maximum line length in characters (default: 64)
+     * @param {number} options.wordsPerLine - Number of words per line (default: 12)
+     * @param {number} options.maxLineLength - Maximum words before inserting a line break (default: 6, 0 to disable)
      * @returns {Object} - YouTube caption format object
      */
     convertToYouTubeFormat(response, options = {}) {
@@ -230,24 +230,34 @@ class GroqAPI {
             const jsonSubtitles = { events: [] };
             const useWordTimestamps = options.useWordTimestamps || false;
             const wordsPerLine = options.wordsPerLine || 12;
-            const maxLineLength = options.maxLineLength || 64;
+            const maxLineLength = options.maxLineLength !== undefined ? options.maxLineLength : 6;
             
-            // Insert newlines into text at the nearest space if it's longer than maxLineLength characters
+            // Insert newlines after specified number of words
             function insertNewlines(text) {
+                // If maxLineLength is 0, don't insert any newlines
+                if (maxLineLength === 0) {
+                    return text.trim();
+                }
+                
                 let newText = '';
-                let lineLength = 0;
+                let wordCount = 0;
+                
+                // Trim leading and trailing spaces before processing
+                text = text.trim();
                 
                 text.split(' ').forEach((word) => {
-                    if (lineLength + word.length <= maxLineLength) {
-                        newText += (lineLength > 0 ? ' ' : '') + word;
-                        lineLength += word.length + (lineLength > 0 ? 1 : 0); // +1 for the space
+                    if (word === '') return; // Skip empty words
+                    
+                    if (wordCount < maxLineLength) {
+                        newText += (wordCount > 0 ? ' ' : '') + word;
+                        wordCount++;
                     } else {
                         newText += '\n' + word;
-                        lineLength = word.length;
+                        wordCount = 1;
                     }
                 });
                 
-                return newText.trim();
+                return newText;
             }
             
             // Process using word-level timestamps if available and enabled
@@ -265,15 +275,18 @@ class GroqAPI {
                     if (currentLine.length === 0) {
                         lineStartTime = word.start;
                         currentLine.push(word);
-                        currentLineLength = word.word.length;
-                    } else if (currentLine.length < wordsPerLine && currentLineLength + word.word.length + 1 <= maxLineLength) {
-                        // Add to current line if we haven't reached the limit
+                    } else if (currentLine.length < wordsPerLine) {
+                        // Add to current line if we haven't reached the words per line limit
                         currentLine.push(word);
-                        currentLineLength += word.word.length + 1; // +1 for space
                     } else {
                         // Process the current line
                         const lineEndTime = currentLine[currentLine.length - 1].end;
-                        const lineText = currentLine.map(w => w.word).join(' ');
+                        let lineText = currentLine.map(w => w.word).join(' ').trim();
+                        
+                        // Apply line breaks based on maxLineLength if it's not 0
+                        if (maxLineLength > 0) {
+                            lineText = insertNewlines(lineText);
+                        }
                         
                         jsonSubtitles.events.push({
                             tStartMs: lineStartTime * 1000,
@@ -291,7 +304,12 @@ class GroqAPI {
                 // Process the last line if there are any words left
                 if (currentLine.length > 0) {
                     const lineEndTime = currentLine[currentLine.length - 1].end;
-                    const lineText = currentLine.map(w => w.word).join(' ');
+                    let lineText = currentLine.map(w => w.word).join(' ').trim();
+                    
+                    // Apply line breaks based on maxLineLength if it's not 0
+                    if (maxLineLength > 0) {
+                        lineText = insertNewlines(lineText);
+                    }
                     
                     jsonSubtitles.events.push({
                         tStartMs: lineStartTime * 1000,

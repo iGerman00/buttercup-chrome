@@ -147,9 +147,12 @@
                     <input type="number" min="1" max="20" value="12" class="input input-bordered w-full mb-2" id="words-per-line" />
                     
                     <label class="label">
-                        <span class="label-text">Maximum line length (characters)</span>
+                        <span class="label-text">Words per line break</span>
                     </label>
-                    <input type="number" min="20" max="120" value="64" class="input input-bordered w-full mb-2" id="max-line-length" />
+                    <input type="number" min="0" max="20" value="8" class="input input-bordered w-full mb-2" id="max-line-length" />
+                    <p class="text-xs text-gray-500 mt-1">
+                        Number of words before inserting a line break. Set to 0 to disable line breaks.
+                    </p>
                 </div>
             </div>
             
